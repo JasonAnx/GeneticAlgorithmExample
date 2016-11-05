@@ -1,0 +1,55 @@
+  <!DOCTYPE html>
+  <html>
+    <head>
+        <title>JavaScript Genetic Algorithm</title>
+        <meta charset="utf-8" /> 
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>  
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <!-- body -->
+    <body>
+        <div class="container z-depth-1">
+            <!-- Page Content goes here -->
+            <h3 class="center-align">UNIVERSIDAD DE COSTA RICA</h3>
+            <H4 class="center-align">GENETIC ALGORITHMS SCAFFOLDING</H4>
+            
+            <p class="flow-text">
+                Loads an image from lorempixel, creates random images and estimates similarity 
+                (the lower the number the more similar, assuming similarity as a pixel per pixel color
+                 comparison). 
+            </p>
+
+            <p class="flow-text">
+                <strong> NOTE</strong>: Hover the table images to see their similarity.
+            </p>
+
+            
+            <!--The Original Image-->
+            <canvas id="canvas" width="100" height="100"></canvas> 
+            
+            <!--Table/Grid that will be filled with randomly generated images-->
+            <h2>Table </h2>
+            <input type="button" class="btn" onclick="main()" value="Start">
+            <table id="table"></table>
+
+            <div id="asdf" > </div>
+            <div id="sm" > </div>
+
+            
+            <H4>Individuals</H4>
+            <div id="indv" > </div>
+            
+
+        </div>
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.min.js"></script>
+        <script type="text/javascript" src="js/genetic.js"></script>
+
+    </body>
+  </html>

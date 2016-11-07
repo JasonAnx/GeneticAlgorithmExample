@@ -10,7 +10,7 @@ img.crossOrigin = "Anonymous";
 canvas = [];
 
 // The individuals
-context         = [];
+// context         = [];
 
 var imgData ;
 
@@ -22,13 +22,11 @@ var individuals = [];
 // when it has been loaded 
 img.onload = function() {
     ctx.drawImage( img, 0, 0 );
-    toHTML();
+    main();
 }
 
 
 function toHTML(población) {
-    alert("Remove población array");
-    población = new Array(25);
     
     // get to original image in order to use it later
     //  for camparisons
@@ -44,14 +42,7 @@ function toHTML(población) {
             // Insert / change to a new row every _numc_ iterations
         	row = table.insertRow(table.rows.length) ;
         }
-        // create the HTML canvas that will hold the image
-    	canvas[i] = document.createElement("canvas") ;
-        canvas[i].width = "100";
-        canvas[i].height= "100";
-		canvas[i].className = "card-panel hoverable"
-		
-        context[i]  = canvas[i].getContext('2d');
-        CreateImage ( context[i] );
+        
         //context[i].putImageData(imgData,0,0) ;
 
         imageData[i] = context[i].getImageData( 0, 0, 100, 100);
@@ -93,50 +84,120 @@ function toHTML(población) {
 // 
 // ---------------------------------------------- 
 function main() {
-	var g			= 0;
-	población 	    = [100];
-	poblaciónNueva  = [180];
+	población 	    = new Array(100);
+	poblaciónNueva  = new Array(población.length + población.length*0.8);
+
+	inicializar( población );
+	inicializar( poblaciónNueva );
 	generarPoblaciónInicial( población );
 
-	aptitud = [población.length];
-	calcularAptitud(población,aptitud);
-	while (g++<1000 && aptitudMayor(población,aptitud)<4){
-		cruzar(población, poblaciónNueva);
-		mutar(población) ;
-		seleccionar(población, poblaciónNueva,aptitud);
+	aptitud = new Array( población.length );
+	calcularAptitud( población, aptitud );
+
+	var counter			= 0;
+	numGeneraciones = 100; // TODO subir a 1000
+
+	console.log(población.length);
+	console.log(poblaciónNueva.length);
+	// población.forEach(function(entry) {
+	//     console.log(entry);
+	// });
+	
+	while ( counter++ < numGeneraciones  && aptitudMayor( población, aptitud ) < 4 ) {
+		cruzar( población, poblaciónNueva );
+		mutar( población );
+		seleccionar( población, poblaciónNueva, aptitud );
 	}
 }
 
-function generarPoblaciónInicial(población) {
-	for (var i = 0; i < población.length; i++) {
-		población[i]= (Math.random()*10)-5 ;
+function inicializar(p) {
+	for (var i = 0; i < p.length; i++) {
+		// create the HTML canvas that will hold the image
+    	canvas[i] = document.createElement("canvas") ;
+        canvas[i].width = "100";
+        canvas[i].height= "100";
+		canvas[i].className = "card-panel hoverable"
+		
+        p[i]  = canvas[i].getContext('2d');
 	}
+}
+
+function generarPoblaciónInicial(p) {
+	for (var i = 0; i < p.length; i++) {
+		nCircles    = Math.floor((Math.random() * 3) + 1);
+    	nLines      = Math.floor((Math.random() * 3) + 1);
+    	nRectangles = Math.floor((Math.random() * 3) + 1);
+
+    	p[i].circles      = nCircles           ;
+    	p[i].lines        = nLines             ;
+    	p[i].rectangles   = nRectangles        ;
+        // CreateImage ( p[i] );
+	}
+}
+
+function aptitudMayor( población, aptitud ) {
+	var máximo = 0;
+	var t = aptitud[0];
+	for ( var i = 0; i < aptitud.length; i++) {
+		t = aptitud[i];
+		máximo = t > máximo ? t : máximo;
+	}
+	return 0;
+}
+
+// seleccionar los mejores, y algunos chapas
+function seleccionar( población, poblaciónNueva, aptitud ) {
+	calcularAptitud( poblaciónNueva, aptitud);
+	// similitud? TODO
+	ordenar( poblaciónNueva );
+	for (var i = 0; i < población.length*.8; i++) {
+		población[i] = poblaciónNueva[i];
+	}
+	for (var i = 0; i < población.length*.2; i++) {
+		población[i] = poblaciónNueva[ poblaciónNueva.length-i ];
+	}
+	
 }
 
 function calcularAptitud(población, aptitud) {
-	for (var i = 0; i < población.length; i++) {
-		aptitud[i]= -1*población[i]*población[i]+3;
+	for ( var i = 0; i < población.length; i++ ) {
+		aptitud[i] = -1*población[i]*población[i]+3;
 	}
 }
 
 function mutar(poblaciónNueva) {
-	// System.out.println("mutar");
+	// mutar 10% de la población 
 	var a;
 	for ( var i = 0; i < poblaciónNueva.length*.1; i++) {
-		a =  (Math.random()*180) ;
-		poblaciónNueva[a]= (Math.random()*10) - 5; 
+		a = parseInt( Math.random() * poblaciónNueva.length );
+		// poblaciónNueva[a] = (Math.random()*10) - 5; 
+        poblaciónNueva[a].circles    = parseInt(Math.random()*10) - 5; // TODO why 10?
+        poblaciónNueva[a].lines      = parseInt(Math.random()*10) - 5;
+        poblaciónNueva[a].rectangles = parseInt(Math.random()*10) - 5;
 	}
 }
+
 function cruzar(población, poblaciónNueva) {
-	// System.out.println("cruzar");
+
+	
 	for (var i = 0; i < población.length; i++) {
-		poblaciónNueva[i]=población[i];
+		poblaciónNueva[i] = población[i];
 	}
+
+	// poblaciónNueva.forEach(function(entry) {
+	//     console.log(entry);
+	// });
+
 	var a,b;
-	for (var i = 0; i < población.length*.8; i++) {
-		a = (Math.random()*100) ;
-		b = (Math.random()*100) ;
-		poblaciónNueva[i+población.length]= (población[a]*población[b])/2; 
+    // setting the población.length*0.8 remaining entries
+	for (var i = 0; i < población.length*0.8; i++) {
+		a = parseInt( Math.random() * población.length );
+		b = parseInt( Math.random() * población.length );
+		
+		// poblaciónNueva[ i + población.length ] = ( población[a] * población[b] ) / 2; 
+        poblaciónNueva[ i + población.length ].circles      = ( población[a].circles    * población[b].circles   ) / 2;
+        poblaciónNueva[ i + población.length ].lines        = ( población[a].lines      * población[b].lines     ) / 2;
+        poblaciónNueva[ i + población.length ].rectangles   = ( población[a].rectangles * población[b].rectangles) / 2;
 	}
 }
 // ----------------------------------------------
@@ -144,13 +205,6 @@ function cruzar(población, poblaciónNueva) {
 // ---------------------------------------------- 
 
 function CreateImage(context) {
-	nCircles    = Math.floor((Math.random() * 3) + 1);
-    nLines      = Math.floor((Math.random() * 3) + 1);
-    nRectangles = Math.floor((Math.random() * 3) + 1);
-
-    context.circles      = nCircles           ;
-    context.lines        = nLines             ;
-    context.rectangles   = nRectangles        ;
     
     for (var i=0 ; i<nCircles;i++) {
 		x1= Math.floor((Math.random() * 100) + 1);

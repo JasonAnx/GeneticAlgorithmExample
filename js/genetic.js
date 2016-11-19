@@ -84,7 +84,10 @@ function toHTML(población) {
 // 
 // ---------------------------------------------- 
 function main() {
-	población 	    = new Array(100);
+
+	pobSize = 10; // TODO subir a 100 de nuevo
+
+	población 	    = new Array( pobSize );
 	poblaciónNueva  = new Array(población.length + población.length*0.8);
 
 	inicializar( población );
@@ -106,32 +109,32 @@ function main() {
 	while ( counter++ < numGeneraciones  && aptitudMayor( población, aptitud ) < 4 ) {
 		cruzar( población, poblaciónNueva );
 		mutar( población );
+		// calcularAptitud( población, aptitud ); por que aca´?
 		seleccionar( población, poblaciónNueva, aptitud );
 	}
 }
 
 function inicializar(p) {
 	for (var i = 0; i < p.length; i++) {
-		// create the HTML canvas that will hold the image
-    	canvas[i] = document.createElement("canvas") ;
-        canvas[i].width = "100";
-        canvas[i].height= "100";
-		canvas[i].className = "card-panel hoverable"
+
+		p[i] = new Object;
+
+		// // create the HTML canvas that will hold the image
+    	// canvas[i] = document.createElement("canvas") ;
+        // canvas[i].width = "100";
+        // canvas[i].height= "100";
+		// canvas[i].className = "card-panel hoverable"
 		
-        p[i]  = canvas[i].getContext('2d');
+        // p[i]  = canvas[i].getContext('2d');
 	}
 }
 
 function generarPoblaciónInicial(p) {
 	for (var i = 0; i < p.length; i++) {
-		nCircles    = Math.floor((Math.random() * 3) + 1);
-    	nLines      = Math.floor((Math.random() * 3) + 1);
-    	nRectangles = Math.floor((Math.random() * 3) + 1);
-
-    	p[i].circles      = nCircles           ;
-    	p[i].lines        = nLines             ;
-    	p[i].rectangles   = nRectangles        ;
-        // CreateImage ( p[i] );
+        genIndividuo ( p[i] );
+		// console.log( p[i].circles[0] );
+		// console.log( p[i].lines[0] );
+		// console.log( p[i].rectangles[0] );
 	}
 }
 
@@ -204,40 +207,76 @@ function cruzar(población, poblaciónNueva) {
 //   EOF Genetic Algorithms
 // ---------------------------------------------- 
 
-function CreateImage(context) {
+function genIndividuo (context) {
+	nCircles    = Math.floor((Math.random() * 3) + 1);
+    nLines      = Math.floor((Math.random() * 3) + 1);
+    nRectangles = Math.floor((Math.random() * 3) + 1);
+
+    context.circles      = []        ;
+    context.lines        = []        ;
+    context.rectangles   = []        ;
     
-    for (var i=0 ; i<nCircles;i++) {
-		x1= Math.floor((Math.random() * 100) + 1);
-     	y1= Math.floor((Math.random() * 100) + 1);
-    	fill= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
-    	stroke= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
-    	radius= Math.floor((Math.random() * 20) + 1);
-    	lineWidth= Math.floor((Math.random() * 5) + 1);
+    for ( var i = 0 ; i < nCircles; i++ ) {
+		x1			= Math.floor((Math.random() * 100) + 1);
+     	y1			= Math.floor((Math.random() * 100) + 1);
+    	fill		= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
+    	stroke		= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
+    	radius		= Math.floor((Math.random() * 20) + 1);
+    	lineWidth	= Math.floor((Math.random() * 5) + 1);
     
-		drawCircle(context,x1,y1,radius,fill,3,stroke) ;
+		context.circles[i] = {
+			// context: context,
+			x1		  : x1,
+			y1		  : y1,
+			fill	  : fill,
+			stroke	  : stroke, 
+			radius	  : radius,
+			lineWidth : lineWidth
+		}
+
+		// drawCircle(context,x1,y1,radius,fill,3,stroke) ;
     }
     
-    for (var i=0 ; i<nLines;i++) {
-		x1= Math.floor((Math.random() * 100) + 1);
-    	x2= Math.floor((Math.random() * 100) + 1);
-  	  	y1= Math.floor((Math.random() * 100) + 1);
-    	y2= Math.floor((Math.random() * 100) + 1);
-    	stroke= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
-    	lineWidth= Math.floor((Math.random() * 5) + 1);
-    
-		drawLine(context,x1,y1,x2,y2,lineWidth,stroke) ;
+    for ( var i = 0 ; i < nLines; i++ ) {
+		x1			= Math.floor((Math.random() * 100) + 1);
+    	x2			= Math.floor((Math.random() * 100) + 1);
+  	  	y1			= Math.floor((Math.random() * 100) + 1);
+    	y2			= Math.floor((Math.random() * 100) + 1);
+    	stroke		= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
+    	lineWidth	= Math.floor((Math.random() * 5) + 1);
+		
+		context.lines[i] = {
+			x1		  	: x1		,						
+			x2			: x2		,		
+			y1			: y1		,		
+			y2			: y2		,		
+			stroke		: stroke	,		
+			lineWidth	: lineWidth		
+		}
+
+		// drawLine(context,x1,y1,x2,y2,lineWidth,stroke) ;
     }
     
     for (var i=0 ; i<nRectangles;i++) {
-		x1= Math.floor((Math.random() * 100) + 1);
-    	x2= Math.floor((Math.random() * 100) + 1);
-  	  	y1= Math.floor((Math.random() * 100) + 1);
-    	y2= Math.floor((Math.random() * 100) + 1);
-    	fill= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
-    	stroke= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
-    	lineWidth= Math.floor((Math.random() * 5) + 1);
+		x1			= Math.floor((Math.random() * 100) + 1);
+    	x2			= Math.floor((Math.random() * 100) + 1);
+  	  	y1			= Math.floor((Math.random() * 100) + 1);
+    	y2			= Math.floor((Math.random() * 100) + 1);
+    	fill		= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
+    	stroke		= "#"+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1)+Math.floor((Math.random() * 100) + 1);
+    	lineWidth	= Math.floor((Math.random() * 5) + 1);
+
+		context.rectangles[i] = {
+			x1		  : x1			,	
+			x2		  : x2			,	
+			y1		  : y1			,	
+			y2		  : y2			,	
+			fill	  : fill		,	
+			stroke	  : stroke		,	
+			lineWidth : lineWidth		
+		}
     
-    	drawRectangle(context,x1,y1,x2,y2,fill,lineWidth,stroke) ;
+    	// drawRectangle(context,x1,y1,x2,y2,fill,lineWidth,stroke) ;
 	}
 }
 
